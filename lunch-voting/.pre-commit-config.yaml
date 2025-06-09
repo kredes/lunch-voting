@@ -1,0 +1,16 @@
+exclude: ^lunch-voting/
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
+    hooks:
+      - id: ruff-check
+        args: [ --fix ]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        description: "Run mypy for type checking"
+        entry: mypy
+        language: python
+        types_or: [ python, pyi ]
