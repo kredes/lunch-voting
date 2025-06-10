@@ -24,10 +24,10 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "build == 0.7.0",
-    "pytest == 7.1.2",
-    "pytest-cov == 3.0.0",
-    "responses == 0.25.7",
+    "build == 1.2.2",
+    "pytest == 8.4.0",
+    "pytest-cov == 6.1.1",
+    "pytest-asyncio == 1.0.0",
 ]
 
 lint = [
@@ -54,11 +54,11 @@ minversion = "6.0"
 addopts = "--cov --cov-report html --cov-report term -v"
 pythonpath = ["src"]
 testpaths = ["tests"]
+filterwarnings = "ignore::DeprecationWarning:ast.*"
 
 
 [tool.mypy]
 exclude = ["build"]
-
 
 [tool.ruff]
 include = ["src/*", "tests/*"]
