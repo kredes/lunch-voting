@@ -1,19 +1,20 @@
 from typing import Sequence
 
-from app.dependencies import SessionDep
+from app.routers.dependencies.database import SessionDep
 from app.db.models.restaurants import RestaurantModel
 
 from sqlalchemy import select, update, delete
-from fastapi import Response, APIRouter
+from fastapi import Response, APIRouter, Depends
 from pydantic import TypeAdapter
 
+from app.routers.dependencies.users import get_authenticated_user
 from app.routers.models.restaurants import RestaurantCreate, RestaurantUpdate, Restaurant
 
 router = APIRouter(tags=["restaurants"])
 
 
 # TODO: Pagination
-@router.get("/restaurants", status_code=200)
+@router.get("/restaurants", dependencies=[Depends(get_authenticated_user)], status_code=200)
 def get_restaurants(session: SessionDep) -> Sequence[Restaurant]:
     """
     Returns all existing restaurants.
@@ -24,7 +25,7 @@ def get_restaurants(session: SessionDep) -> Sequence[Restaurant]:
     return TypeAdapter(list[Restaurant]).validate_python(restaurants)
 
 
-@router.post("/restaurants", status_code=201)
+@router.post("/restaurants", dependencies=[Depends(get_authenticated_user)], status_code=201)
 def create_restaurant(data: RestaurantCreate, session: SessionDep) -> Restaurant:
     """
     Creates a new restaurant.
@@ -36,7 +37,9 @@ def create_restaurant(data: RestaurantCreate, session: SessionDep) -> Restaurant
     return Restaurant.model_validate(restaurant)
 
 
-@router.put("/restaurants/{restaurant_id}", status_code=200)
+@router.put(
+    "/restaurants/{restaurant_id}", dependencies=[Depends(get_authenticated_user)], status_code=200
+)
 def update_restaurant(
     restaurant_id: int, data: RestaurantUpdate, response: Response, session: SessionDep
 ) -> Restaurant | None:
@@ -60,7 +63,9 @@ def update_restaurant(
     return Restaurant.model_validate(restaurant)
 
 
-@router.delete("/restaurants/{restaurant_id}", status_code=200)
+@router.delete(
+    "/restaurants/{restaurant_id}", dependencies=[Depends(get_authenticated_user)], status_code=200
+)
 def delete_restaurant(restaurant_id: int, response: Response, session: SessionDep) -> None:
     """
     Deletes a restaurant.

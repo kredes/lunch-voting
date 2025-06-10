@@ -20,6 +20,8 @@ dependencies = [
     "requests == 2.32.3",
     "fastapi[standard] == 0.115.12",
     "SQLAlchemy == 2.0.41",
+    "PyJWT == 2.10.1",
+    "bcrypt == 4.3.0",
 ]
 
 [project.optional-dependencies]
@@ -51,7 +53,7 @@ readme = {file = ["README.md"]}
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--cov --cov-report html --cov-report term -v"
+addopts = "--cov --cov-report html --cov-report term -v --import-mode=importlib"
 pythonpath = ["src"]
 testpaths = ["tests"]
 filterwarnings = "ignore::DeprecationWarning:ast.*"

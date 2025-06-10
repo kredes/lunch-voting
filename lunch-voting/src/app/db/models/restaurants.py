@@ -16,6 +16,6 @@ class RestaurantModel(DatabaseModel):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
-    created: Mapped[datetime | None] = mapped_column(
+    created: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False
     )
