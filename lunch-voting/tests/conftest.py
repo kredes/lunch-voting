@@ -7,10 +7,12 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql.expression import select
 
 from app.app import app
-from app.db import DatabaseModel, UserModel
+from app.db import DatabaseModel, UserModel, RestaurantModel
 from app.db.connections import get_session, init_db
+from app.routers.dependencies.users import get_authenticated_user
 from app.routers.users import hash_password
 
 DatabaseModelType = TypeVar("DatabaseModelType", bound=DatabaseModel)
@@ -18,35 +20,40 @@ DatabaseModelType = TypeVar("DatabaseModelType", bound=DatabaseModel)
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_environment() -> None:
-    """ """
-    # TODO: Split into test and production DB
+    """
+    Initializes the test database. Because this basic implementation uses a SQLite database on the
+    working directory, this will create a database in `/tests` when called here.
+    """
     init_db()
 
 
 @pytest.fixture(scope="function")
-def client(model_factory: ModelFactory) -> Iterator[TestClient]:
+def client(user: UserModel) -> Iterator[TestClient]:
     """
     Authentication is tested separately (`users/users_test.py` and `users/auth_test.py`),
     so we're always logged in for this client so we don't have to do this all the time.
     """
-    username = "cool_guy"
-    password = "8n$039AD9wa564@"
+    app.dependency_overrides[get_authenticated_user] = lambda: user
 
-    model_factory(UserModel, username=username, password_hash=hash_password(password))
+    yield TestClient(app)
 
-    client = TestClient(app)
-
-    response = client.post("/login", data={"username": username, "password": password})
-    assert response.status_code == 200
-
-    client.headers["Authorization"] = f"Bearer {response.json()['access_token']}"
-
-    yield client
+    del app.dependency_overrides[get_authenticated_user]
 
 
 @pytest.fixture(scope="function")
 def session() -> Iterator[Session]:
     yield from get_session()
+
+
+def fetch_one_or_none[DatabaseModelType](
+    model_class: type[DatabaseModelType], **fields: Any
+) -> DatabaseModelType | None:
+    session = next(get_session())
+    query = select(model_class)
+    for field, value in fields.items():
+        query = query.where(getattr(model_class, field) == value)
+
+    return session.execute(query).scalars().one_or_none()
 
 
 class ModelFactory(Protocol):
@@ -82,3 +89,13 @@ def model_factory(session: Session) -> Iterator[ModelFactory]:
             session.commit()
         except InvalidRequestError:
             pass
+
+
+@pytest.fixture
+def user(model_factory: ModelFactory) -> Iterator[UserModel]:
+    yield model_factory(UserModel, username="someone", password_hash=hash_password("bad_password"))
+
+
+@pytest.fixture
+def restaurant(model_factory: ModelFactory) -> Iterator[RestaurantModel]:
+    yield model_factory(RestaurantModel, name="FEBO")
