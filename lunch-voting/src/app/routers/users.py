@@ -10,7 +10,7 @@ from sqlalchemy.orm.session import Session
 from app.config import JWT_SIGNING_KEY, JWT_EXPIRATION_MINUTES
 from app.db import UserModel
 from app.routers.dependencies.database import SessionDep
-from app.routers.models.users import AuthToken, CreateUserData, UserData
+from app.routers.models.users import AuthToken, CreateUserData, User
 from app.routers.dependencies.users import get_authenticated_user
 
 router = APIRouter(tags=["users"])
@@ -96,15 +96,15 @@ def login(
 @router.get("/users/me/", status_code=200)
 def get_current_user(
     logged_in_user: Annotated[UserModel, Depends(get_authenticated_user)],
-) -> UserData:
+) -> User:
     """
     Returns the logged in user.
     """
-    return UserData.model_validate(logged_in_user)
+    return User.model_validate(logged_in_user)
 
 
 @router.post("/users", status_code=201)
-def create_user(data: CreateUserData, session: SessionDep) -> UserData:
+def create_user(data: CreateUserData, session: SessionDep) -> User:
     """
     Creates a new user.
     """
@@ -112,4 +112,4 @@ def create_user(data: CreateUserData, session: SessionDep) -> UserData:
     session.add(user)
     session.commit()
 
-    return UserData.model_validate(user)
+    return User.model_validate(user)

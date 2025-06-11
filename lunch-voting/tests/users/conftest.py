@@ -8,8 +8,8 @@ from app.app import app  # type: ignore
 
 
 @pytest.fixture(scope="function")
-def client() -> Iterator[TestClient]:
+def unauthenticated_client() -> Iterator[TestClient]:
     """
-    An unauthenticated client.
+    A client without authentication headers.
     """
     yield TestClient(app)

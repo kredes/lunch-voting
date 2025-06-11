@@ -12,6 +12,10 @@ from app.db.models.base import DatabaseModel
 
 
 class UserModel(DatabaseModel):
+    """
+    A table representing a user.
+    """
+
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)

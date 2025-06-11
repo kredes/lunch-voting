@@ -22,7 +22,7 @@ def cast_vote(
     session: SessionDep,
 ) -> None:
     """
-    Cast a vote from the currently logged in user to the given restaurant.
+    Cast a vote from the currently logged-in user to the given restaurant.
     """
     restaurant = session.get(RestaurantModel, restaurant_id)
 

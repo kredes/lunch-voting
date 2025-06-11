@@ -2,26 +2,18 @@ import pytest
 
 from fastapi.testclient import TestClient
 from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy import select
 from sqlalchemy.orm.session import Session
 
 from app.db.models.restaurants import RestaurantModel
-from .conftest import ModelFactory
-
-
-def fetch_restaurant(name: str, session: Session) -> RestaurantModel | None:
-    """ """
-    query = select(RestaurantModel).where(RestaurantModel.name == name)
-    return session.execute(query).scalars().one_or_none()
+from .conftest import ModelFactory, one_or_none
 
 
 def test_create_restaurant(client: TestClient, session: Session) -> None:
     """ """
     response = client.post("/restaurants", json={"name": "The Scrapyard"})
-
     assert response.status_code == 201
 
-    restaurant = fetch_restaurant("The Scrapyard", session)
+    restaurant = one_or_none(RestaurantModel, session, name="The Scrapyard")
 
     try:
         assert restaurant is not None
@@ -37,11 +29,10 @@ def test_update_restaurant(
     restaurant = model_factory(RestaurantModel, name="The Scrapyard")
 
     response = client.put(f"/restaurants/{restaurant.id}", json={"name": "Can Andres"})
-
     assert response.status_code == 200
 
+    # The name change is reflected in the database
     session.refresh(restaurant)
-
     assert restaurant.name == "Can Andres"
 
 

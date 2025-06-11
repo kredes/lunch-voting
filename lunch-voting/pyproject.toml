@@ -53,10 +53,9 @@ readme = {file = ["README.md"]}
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--cov --cov-report html --cov-report term -v --import-mode=importlib"
+addopts = "--cov --cov-report html --cov-report term -vvvv --import-mode=importlib"
 pythonpath = ["src"]
 testpaths = ["tests"]
-filterwarnings = "ignore::DeprecationWarning:ast.*"
 
 
 [tool.mypy]

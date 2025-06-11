@@ -45,11 +45,16 @@ def session() -> Iterator[Session]:
     yield from get_session()
 
 
-def fetch_one_or_none[DatabaseModelType](
-    model_class: type[DatabaseModelType], **fields: Any
+def one_or_none[DatabaseModelType](
+    model_class: type[DatabaseModelType], session: Session, **fields: Any
 ) -> DatabaseModelType | None:
-    session = next(get_session())
+    """
+    Util function that fetches at most one row from the given table.
+
+    Equivalent to `SELECT * FROM model_table WHERE field_1 = value_1 AND field_2 = value_2 ...`
+    """
     query = select(model_class)
+
     for field, value in fields.items():
         query = query.where(getattr(model_class, field) == value)
 

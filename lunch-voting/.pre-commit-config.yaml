@@ -13,5 +13,6 @@ repos:
         name: mypy
         description: "Run mypy for type checking"
         entry: mypy
+        args: [ --follow-untyped-imports ]
         language: python
         types_or: [ python, pyi ]
