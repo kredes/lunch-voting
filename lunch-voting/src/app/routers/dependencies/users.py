@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from starlette import status
 
-from app.config import JWT_SIGNING_KEY
+from app.config import Config
 from app.db import UserModel
 from app.routers.dependencies.database import SessionDep
 
@@ -29,7 +29,7 @@ def get_authenticated_user(
     )
 
     try:
-        payload = jwt.decode(token, JWT_SIGNING_KEY, algorithms=["HS256"])
+        payload = jwt.decode(token, Config.jwt_signing_key, algorithms=["HS256"])
         username = payload.get("sub")
         if username is None:
             raise credentials_exception

@@ -1,3 +1,25 @@
-VOTES_PER_USER = 3
-JWT_SIGNING_KEY = "17c037aab10ee32af6f739f1bfeb4ba76259ef301cee98bf00458a67fe3f082c"
-JWT_EXPIRATION_MINUTES = 60
+import os
+from enum import StrEnum, auto
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Environment(StrEnum):
+    DEVELOPMENT = auto()
+    PRODUCTION = auto()
+    CI = auto()
+
+
+ENVIRONMENT = Environment(os.environ.get("ENVIRONMENT", Environment.DEVELOPMENT))
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=f"{ENVIRONMENT}.env", env_file_encoding="utf-8")
+
+    votes_per_user: int
+    jwt_signing_key: str
+    jwt_expiration_minutes: int
+
+
+# mypy doesn't understand that this call doesn't actually require arguments
+Config = Settings()  # type:ignore[call-arg]

@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.sql.expression import select, text
 
-from app.config import VOTES_PER_USER
+from app.config import Config
 from app.db import UserModel, RestaurantModel, VoteModel
 from app.routers.dependencies.database import SessionDep
 from app.routers.dependencies.users import get_authenticated_user
@@ -47,7 +47,7 @@ def cast_vote(
         )
 
     # Has the user reached their daily vote limit?
-    if len(user_votes) >= VOTES_PER_USER:
+    if len(user_votes) >= Config.votes_per_user:
         raise HTTPException(status_code=400, detail="User reached vote limit")
 
     match len(user_votes):

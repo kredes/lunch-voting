@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm.session import Session
 
-from app.config import JWT_SIGNING_KEY, JWT_EXPIRATION_MINUTES
+from app.config import Config
 from app.db import UserModel
 from app.routers.dependencies.database import SessionDep
 from app.routers.models.users import AuthToken, CreateUserData, User
@@ -45,10 +45,10 @@ def generate_user_access_token(user: UserModel):
     """
     jwt_data = {
         "sub": user.username,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=JWT_EXPIRATION_MINUTES),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=Config.jwt_expiration_minutes),
     }
 
-    encoded_jwt = jwt.encode(jwt_data, JWT_SIGNING_KEY, algorithm="HS256")
+    encoded_jwt = jwt.encode(jwt_data, Config.jwt_signing_key, algorithm="HS256")
 
     return encoded_jwt
 
