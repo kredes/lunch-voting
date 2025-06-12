@@ -15,8 +15,8 @@ from app.routers.models.restaurants import (
     RestaurantUpdate,
     Restaurant,
     PaginatedRestaurantResponse,
-    PaginationInfo,
 )
+from app.routers.models.shared import PaginationInfo
 
 router = APIRouter(tags=["restaurants"])
 

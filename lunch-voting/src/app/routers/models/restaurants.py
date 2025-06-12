@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from app.routers.models.shared import DataModel
+from app.routers.models.shared import DataModel, PaginationInfo
 
 
 class Restaurant(DataModel):
@@ -15,13 +15,11 @@ class Restaurant(DataModel):
     created: datetime
 
 
-class PaginationInfo(DataModel):
-    offset: int
-    limit: int
-    total: int
-
-
 class PaginatedRestaurantResponse(DataModel):
+    """
+    A paginated response containing restaurant objects.
+    """
+
     data: list[Restaurant]
     pagination: PaginationInfo
 
