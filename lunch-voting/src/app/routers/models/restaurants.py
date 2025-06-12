@@ -15,6 +15,17 @@ class Restaurant(DataModel):
     created: datetime
 
 
+class PaginationInfo(DataModel):
+    offset: int
+    limit: int
+    total: int
+
+
+class PaginatedRestaurantResponse(DataModel):
+    data: list[Restaurant]
+    pagination: PaginationInfo
+
+
 class RestaurantCreate(BaseModel):
     """
     The data necessary to create a restaurant via the API.

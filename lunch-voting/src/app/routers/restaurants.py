@@ -1,28 +1,47 @@
-from typing import Sequence
+from typing import Annotated
+
+from sqlalchemy.sql.functions import func
 
 from app.routers.dependencies.database import SessionDep
 from app.db.models.restaurants import RestaurantModel
 
-from sqlalchemy import select, update, delete
-from fastapi import Response, APIRouter, Depends
 from pydantic import TypeAdapter
+from sqlalchemy import select, update, delete
+from fastapi import Response, APIRouter, Depends, Query
 
 from app.routers.dependencies.users import get_authenticated_user
-from app.routers.models.restaurants import RestaurantCreate, RestaurantUpdate, Restaurant
+from app.routers.models.restaurants import (
+    RestaurantCreate,
+    RestaurantUpdate,
+    Restaurant,
+    PaginatedRestaurantResponse,
+    PaginationInfo,
+)
 
 router = APIRouter(tags=["restaurants"])
 
 
-# TODO: Pagination
 @router.get("/restaurants", dependencies=[Depends(get_authenticated_user)], status_code=200)
-def get_restaurants(session: SessionDep) -> Sequence[Restaurant]:
+def get_restaurants(
+    session: SessionDep, offset: int = 0, limit: Annotated[int, Query(le=100)] = 10
+) -> PaginatedRestaurantResponse:
     """
     Returns all existing restaurants.
     """
-    query = select(RestaurantModel)
+    total_restaurant_count_query = select(func.count()).select_from(RestaurantModel)
+    total_restaurant_count = int(session.scalar(total_restaurant_count_query))
+
+    query = select(RestaurantModel).order_by(RestaurantModel.id).offset(offset).limit(limit)
     restaurants = session.scalars(query).all()
 
-    return TypeAdapter(list[Restaurant]).validate_python(restaurants)
+    return PaginatedRestaurantResponse(
+        data=TypeAdapter(list[Restaurant]).validate_python(restaurants),
+        pagination=PaginationInfo(
+            offset=offset,
+            limit=limit,
+            total=total_restaurant_count,
+        ),
+    )
 
 
 @router.post("/restaurants", dependencies=[Depends(get_authenticated_user)], status_code=201)
