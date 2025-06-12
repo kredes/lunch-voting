@@ -7,12 +7,7 @@ repos:
         files: src|tests
       - id: ruff-format
         args: [ --line-length=100 ]
-  - repo: local
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.16.0
     hooks:
       - id: mypy
-        name: mypy
-        description: "Run mypy for type checking"
-        entry: mypy
-        args: [ --follow-untyped-imports ]
-        language: python
-        types_or: [ python, pyi ]
