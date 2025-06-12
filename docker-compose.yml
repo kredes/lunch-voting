@@ -1,0 +1,12 @@
+name: convious-lunch-voting
+
+services:
+  convious-lunch-voting:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ENVIRONMENT=development
+    ports:
+      - "8000:80"
+    tty: true

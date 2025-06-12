@@ -1,5 +1,6 @@
 import os
 from enum import StrEnum, auto
+from dotenv import find_dotenv
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -14,7 +15,9 @@ ENVIRONMENT = Environment(os.environ.get("ENVIRONMENT", Environment.DEVELOPMENT)
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=f"{ENVIRONMENT}.env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=find_dotenv(f"{ENVIRONMENT}.env"), env_file_encoding="utf-8"
+    )
 
     votes_per_user: int
     jwt_signing_key: str
