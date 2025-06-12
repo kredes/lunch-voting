@@ -10,26 +10,45 @@ This project uses the following libraries:
 - **Pydantic** for data parsing/validation/handling and settings management (**pydantic-settings**).
 
 
-## Prerequisites
+## Running locally
+
+### Prerequisites
 
 This project has been built and tested with Python 3.13. That is the only version guaranteed to 
 work.
 
-Note that it uses features introduced in Python 3.12. In particular, [type parameter 
-lists](https://docs.python.org/3/reference/compound_stmts.html#type-parameter-lists), so any 
+Note that it uses features introduced in Python 3.12 (in particular, [type parameter 
+lists](https://docs.python.org/3/reference/compound_stmts.html#type-parameter-lists)) so any 
 earlier versions won't work at all. It *should* run just fine on Python 3.12, but I haven't 
 tested it explicitly.
 
+To install all requirements:
 
-## Running locally
+```shell
+cd ~/path/to/backend-assignment-andres-insaurralde
 
-From the repository root, running the server locally should be as simple as:
+# Create and activate a virtual environment (make sure you're using Python 3.13)
+python3 -m venv .venv
+source .venv/bin/activate
 
+cd lunch-voting
+
+# Install runtime dependencies
+pip install .       
+
+# Install development dependencies - optional
+pip install .[test]
+pip install .[lint]
 ```
+
+With all dependencies installed, running the server locally should be as simple as:
+
+```shell
+# Run from the `lunch-voting` directory
 fastapi run src/app/app.py
 ```
 
-For full debugging capabilities, you can run it with `fastapi dev` instead.
+For full debugging capabilities, you can run the server with `fastapi dev` instead.
 
 
 ## Running the docker container

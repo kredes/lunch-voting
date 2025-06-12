@@ -1,3 +1,7 @@
+"""
+Entry point for the application.
+"""
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
