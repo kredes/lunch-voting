@@ -1,10 +1,10 @@
 FROM python:3.13
 
-ENV PATH=/home/convious/.local/bin:${PATH}
+ENV PATH=/home/app/.local/bin:${PATH}
 
-COPY lunch-voting /home/convious/lunch-voting
+COPY lunch-voting /home/app/lunch-voting
 
-WORKDIR /home/convious/lunch-voting
+WORKDIR /home/app/lunch-voting
 
 # Install and build
 RUN pip install ".[test]"

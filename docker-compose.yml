@@ -1,7 +1,7 @@
-name: convious-lunch-voting
+name: lunch-voting
 
 services:
-  convious-lunch-voting:
+  lunch-voting:
     build:
       context: .
       dockerfile: Dockerfile

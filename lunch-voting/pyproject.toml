@@ -9,12 +9,9 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "convious_assignment"
+name = "lunch-voting"
 requires-python = ">=3.13"
-classifiers = [
-    "Programming Language :: Python :: 3",
-]
-description = "Convious Recruitment Python Assignment"
+description = "Lunch Voting API"
 dynamic = ["version", "readme"]
 dependencies = [
     "fastapi[standard] == 0.115.12",
