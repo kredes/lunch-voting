@@ -1,0 +1,46 @@
+[project]
+name = "lunch-voting"
+version = "0.1.0"
+description = "Lunch Voting API"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "bcrypt>=4.3.0",
+    "fastapi[standard]>=0.116.1",
+    "gunicorn>=23.0.0",
+    "pydantic-settings>=2.10.1",
+    "pyjwt>=2.10.1",
+    "python-dotenv>=1.1.1",
+    "sqlalchemy>=2.0.43",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1",
+    "poethepoet>=0.37.0",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "ruff>=0.12.11",
+]
+
+[tool.poe.tasks]
+serve = "fastapi dev src/app/app.py"
+test = "pytest"
+init_db = "python scripts/init_db.py"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov --cov-report html --cov-report term -vvvv --import-mode=importlib"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+
+[tool.mypy]
+exclude = ["build"]
+
+[tool.ruff]
+include = ["src/*", "tests/*"]
+exclude = ["__pycache__"]
+line-length = 100

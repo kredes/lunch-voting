@@ -1,0 +1,11 @@
+name: lunch-voting
+
+services:
+  lunch-voting:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ENVIRONMENT=production
+    ports:
+      - "8000:8000"
